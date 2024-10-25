@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Empresas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        textarea, input[type="text"], input[type="date"] {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Cadastro de Empresas</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Nome Organização</th>
+                <th>Cidade</th>
+                <th>Contato</th>
+                <th>Ponto Focal</th>
+                <th>Próxima Agenda</th>
+                <th>NPS</th>
+                <th>Risco de Churn</th>
+                <th>Data Atualização Churn</th>
+                <th>NPS - Última Pesquisa</th>
+                <th>Observações Churn</th>
+                <th>Resumo Relacionamento</th>
+                <th>Ação</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody">
+            <!-- Linhas da tabela serão inseridas aqui -->
+        </tbody>
+    </table>
+    <button onclick="exportData()" class="btn">Exportar Dados</button>
+
+    <script>
+        const companies = [
+            { name: 'Anjo Química Do Brasil LTDA', city: 'Criciúma', revenue: '48 3461 8000', contact: 'Phelipe Ribeiro' },
+            { name: 'Águia Sistemas de Armazenagem S/A', city: 'Ponta Grossa', revenue: '(42) 3220-2666', contact: 'Phelipe Ribeiro' },
+            { name: 'Anjo Química Do Brasil LTDA', city: 'Criciúma', revenue: '48 3461 8000', contact: 'Phelipe Ribeiro' },
+            { name: 'Águia Sistemas de Armazenagem S/A', city: 'Ponta Grossa', revenue: '(42) 3220-2666', contact: 'Phelipe Ribeiro' },
+            { name: 'Bettanin S/A', city: 'Esteio', revenue: '(51) 3458-0003', contact: 'Phelipe Ribeiro' },
+            { name: 'Brandili Têxtil Ltda', city: 'Apiúna', revenue: '(47) 3353-2401', contact: 'Phelipe Ribeiro' },
+            { name: 'Ceramfix Indústria Comercio de Argamassas e Rejuntes SA', city: 'Gaspar', revenue: '(47) 2102-0511', contact: 'Phelipe Ribeiro' },
+            { name: 'Clinica de Imagem Brusque - CIB', city: 'Brusque', revenue: '(47) 3331-4801', contact: 'Phelipe Ribeiro' },
+            { name: 'DRM Distribuidora De Rolamentos E Mancais LTDA', city: 'Curitiba', revenue: '(41) 3288-4400', contact: 'Phelipe Ribeiro' },
+            { name: 'Docol Metais Sanitários Ltda', city: 'Joinville', revenue: '0800 47900', contact: 'Phelipe Ribeiro' },
+            { name: 'Embrast Industrial e Comércio de Embalagens LTDA', city: 'Itajaí', revenue: '(47) 3247-0031', contact: 'Phelipe Ribeiro' },
+            { name: 'Fati Ferramentas Ltda', city: 'Novo Hamburgo', revenue: '051 3406 7200', contact: 'Phelipe Ribeiro' },
+            { name: 'Fazzenda Hotéis LTDA', city: 'Gaspar', revenue: '(47) 3397-9000', contact: 'Phelipe Ribeiro' },
+            { name: 'JB World Entretenimento S/A', city: 'Penha', revenue: '(47) 3261-2000', contact: 'Phelipe Ribeiro' },
+            { name: 'Metalúrgica Arouca Ltda', city: 'São Paulo', revenue: '(11) 2714-5800', contact: 'Phelipe Ribeiro' },
+            { name: 'Margem Companhia de Mineração S/A', city: 'Pomerode', revenue: '(47) 3242-2128', contact: 'Phelipe Ribeiro' },
+            { name: 'Metalúrgica Fey Ltda', city: 'Indaial', revenue: '(47) 3301-7000', contact: 'Phelipe Ribeiro' },
+            { name: 'MP Centro de Diagnóstico Avançado Ltda.', city: 'Londrina', revenue: '(43) 3027-8300', contact: 'Phelipe Ribeiro' },
+            { name: 'Navas & Cia Ltda', city: 'Lins', revenue: '014 3533 2900', contact: 'Phelipe Ribeiro' },
+            { name: 'Riomed Distribuição LTDA', city: 'Rio do Sul', revenue: '0800 645 0110', contact: 'Phelipe Ribeiro' },
+            { name: 'Supermax Brasil Importadora S/A', city: 'Curitiba', revenue: '(41) 3024-8088', contact: 'Phelipe Ribeiro' },
+            { name: 'Supremo Cimentos S/A - Filial Pomerode', city: 'Pomerode', revenue: '(47) 3242-2145', contact: 'Phelipe Ribeiro' },
+            { name: 'Servicos Medicos Clinica Sao Lucas LTDA', city: 'Itajaí', revenue: '(47) 3249-2922', contact: 'Phelipe Ribeiro' },
+            { name: 'Tupy S/A', city: 'Joinville', revenue: '(47) 4009 - 8585', contact: 'Phelipe Ribeiro' },
+            { name: 'Ecomax - Centro de Diagnóstico por Imagem', city: 'Blumenau', revenue: '(47) 3331-4844', contact: 'Phelipe Ribeiro' },
+            { name: 'Marisol Vestuário S.A', city: 'Jaraguá do Sul', revenue: '(47) 3372-6000', contact: 'Phelipe Ribeiro' },
+            { name: 'Sintex Industrial de Plásticos LTDA', city: 'Joinville', revenue: '47 3473-5555', contact: 'Phelipe Ribeiro' },
+            { name: 'Blukit Metalurgica Ltda', city: 'Blumenau', revenue: '(47) 3331-0800', contact: 'Phelipe Ribeiro' },
+            { name: 'São Lucas - Centro de Diagnóstico por Imagem Ltda', city: 'Itajaí', revenue: '(47) 3249-2922', contact: 'Phelipe Ribeiro' },
+            { name: 'Clínica São Lucas de Balneário Camboríu Ltda', city: 'Balneário Camboríu', revenue: '(47) 3249-2922', contact: 'Phelipe Ribeiro' },
+            { name: 'Eco-Rad Serviços Médicos Ltda', city: 'Itajaí', revenue: '(47) 3249-2922', contact: 'Phelipe Ribeiro' },
+            { name: 'Centralsul LTDA', city: 'Arroio do meio', revenue: '51 3716-3344', contact: 'Phelipe Ribeiro' },
+            { name: 'Toledo do Brasil Industria de Balanças LTDA', city: 'São Bernardo do Campo', revenue: '(11) 4356-9000', contact: 'Phelipe Ribeiro' },
+            { name: 'Ecomax-Centro De Diagnostico Por Imagem LTDA', city: 'Florianópolis', revenue: '', contact: 'Phelipe Ribeiro' },
+            { name: 'Minusa Tratorpeças LTDA', city: 'Lages', revenue: '49 3226 1000', contact: 'Phelipe Ribeiro' },
+            { name: 'Corsul Comercio e Representações do Sul LTDA', city: 'Criciúma', revenue: '(48) 3461-8500', contact: 'Phelipe Ribeiro' },
+            { name: 'Pamplona Iluminação LTDA', city: 'Blumenau', revenue: '47 3036-5155', contact: 'Phelipe Ribeiro' },
+            { name: 'Ilumi Industria e Comercio Ltda.', city: 'Leme', revenue: '(19) 3572-2299', contact: 'Phelipe Ribeiro' },
+            { name: 'Assa Abloy Sistemas de Segurança LTDA', city: 'Sorocaba', revenue: '(11) 5693-4700', contact: 'Phelipe Ribeiro' },
+            { name: 'Bertolini S/A', city: 'BENTO GONÇALVES', revenue: '54 2102 8507', contact: 'Phelipe Ribeiro' },
+            { name: 'Bertolini S/A', city: 'Colatina', revenue: '(54) 2102-8500', contact: 'Phelipe Ribeiro' },
+            { name: 'ITACORDA INDÚSTRIA E COMÉRCIO LTDA', city: 'Penha', revenue: '47 3342 9400', contact: 'Phelipe Ribeiro' },
+            { name: 'Ecoflex Fábrica de Espumas e Colchões Ltda', city: 'São Bento do Sul', revenue: '(47) 3631-3300', contact: 'Phelipe Ribeiro' },
+            { name: 'Guimarães Brasil Indústria e Alimentos Ltda', city: 'Santo Antonio da Patrulha', revenue: '(51) 3409-1100', contact: 'Phelipe Ribeiro' },
+            { name: 'Eternit S.A.', city: 'São Paulo', revenue: '0800 021 1709', contact: 'Phelipe Ribeiro' },
+            { name: 'Pedra Boa Comércio de Ferragens e Material Eléctrico Ltda', city: 'Joinville', revenue: '(47) 3467-1010', contact: 'Phelipe Ribeiro' },
+            { name: 'Tileesul - Druca Malhas LTDA', city: 'Gaspar', revenue: '(47) 3332-3715', contact: 'Phelipe Ribeiro' },
+            { name: 'INDUSTRIA E COMERCIO DE PLASTICOS CAJOVIL LTDA', city: 'BRUSQUE', revenue: '4732510165', contact: 'Phelipe Ribeiro' },
+            { name: 'San Marcos Revestimentos Ceramicos LTDA', city: 'Jaguaruna', revenue: '(48) 3302-6100', contact: 'Phelipe Ribeiro' },
+            { name: 'Df&M Alimentos LTDA', city: 'RIO DE JANEIRO', revenue: '21990117450', contact: 'Phelipe Ribeiro' },
+            { name: 'Fundição Mademil LTDA', city: 'NOVA VENEZA', revenue: '48 3436-6414', contact: 'Phelipe Ribeiro' },
+            { name: 'Confecções Açucena LTDA', city: 'Guaramirim', revenue: '(47) 3373-1217', contact: 'Phelipe Ribeiro' },
+            { name: 'Gaf Agronegocios Ltda', city: 'Castro', revenue: '42 99914 0306', contact: 'Phelipe Ribeiro' },
+            { name: 'Canguru Plásticos Ltda', city: 'Criciúma', revenue: '(48) 3461-9000', contact: 'Phelipe Ribeiro' },
+            { name: 'La San Day do Brasil LTDA', city: 'Santo Amaro da Imperatriz', revenue: '(48) 3034-1513', contact: 'Phelipe Ribeiro' },
+            { name: 'Jandir Sorato LTDA', city: 'Içara', revenue: '(48) 3432-0840', contact: 'Phelipe Ribeiro' },
+            { name: 'Pulvitec do Brasil Industria e Comercio de Colas e Adesivos LTDA', city: 'São Paulo', revenue: '0800 701 7007', contact: 'Phelipe Ribeiro' },
+            { name: 'PROMETAL - I.R.NEUTZLING & CIA LTDA', city: 'Pelotas', revenue: '(53) 3227-0470', contact: 'Phelipe Ribeiro' },
+            { name: 'MONDE PHARMA PRODUTOS FARMACÊUTICOS LTDA', city: 'Santa Cruz do Sul', revenue: '(51) 3053-9500', contact: 'Phelipe Ribeiro' },
+            { name: 'Etilux Importadora e Distribuidora de Artigos de Cutelaria SA', city: 'São Paulo', revenue: '(11) 2955-1800', contact: 'Phelipe Ribeiro' },
+            { name: 'CLAW COMERCIAL IMPORTADORA E EXPORTADORA LTDA', city: 'Jaraguá do Sul', revenue: '0800 642 2004', contact: 'Phelipe Ribeiro' },
+            { name: 'LUX ESQUADRIAS DE ALUMINIO LTDA', city: 'São Paulo', revenue: '(11) 2745-2020', contact: 'Phelipe Ribeiro' },
+            { name: 'Sol Nascente Com. Imp. Exp. Ltda', city: 'Criciúma', revenue: '(48) 3478-3553', contact: 'Phelipe Ribeiro' },
+            { name: 'SOLES REVESTIMENTOS CERÂMICOS LTDA', city: 'Santa Gertrudes', revenue: '48 3302 6100', contact: 'Phelipe Ribeiro' },
+            { name: 'Cartosul Fabricação de Artefatos de Papelão Ltda', city: 'Campo Largo', revenue: '(41) 3393-1199', contact: 'Phelipe Ribeiro' },
+        ];
+
+        function loadCompanies() {
+            const tableBody = document.getElementById('tableBody');
+            companies.forEach((company, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${company.name}</td>
+                    <td>${company.city}</td>
+                    <td><textarea id="contact-${index}" placeholder="Contato">${getSavedData(`contact-${index}`) || company.contact}</textarea></td>
+                    <td><textarea id="empresa-${index}" placeholder="">${getSavedData(`empresa-${index}`) || ''}</textarea></td>
+                    <td><input type="date" id="agenda-update-${index}" value="${getSavedData(`agenda-update-${index}`) || ''}" /></td>
+                    <td><textarea id="nps-${index}" placeholder="">${getSavedData(`nps-${index}`) || ''}</textarea></td>
+                    <td><textarea id="riskchurn-${index}" placeholder="">${getSavedData(`riskchurn-${index}`) || ''}</textarea></td>
+                    <td><input type="date" id="churn-update-${index}" value="${getSavedData(`churn-update-${index}`) || ''}" /></td>
+                    <td><input type="date" id="nps-update-${index}" value="${getSavedData(`nps-update-${index}`) || ''}" /></td>
+                    <td><textarea id="observations-${index}" placeholder="">${getSavedData(`observations-${index}`) || ''}</textarea></td>
+                    <td><textarea id="summary-${index}" placeholder="">${getSavedData(`summary-${index}`) || ''}</textarea></td>
+                    <td>
+                        <button onclick="saveCompany(${index})" class="btn">Salvar</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        function saveCompany(index) {
+            const data = {
+                contact: document.getElementById(`contact-${index}`).value,
+                empresa: document.getElementById(`empresa-${index}`).value,
+                agendaUpdate: document.getElementById(`agenda-update-${index}`).value,
+                nps: document.getElementById(`nps-${index}`).value,
+                riskChurn: document.getElementById(`riskchurn-${index}`).value,
+                churnUpdate: document.getElementById(`churn-update-${index}`).value,
+                npsUpdate: document.getElementById(`nps-update-${index}`).value,
+                observations: document.getElementById(`observations-${index}`).value,
+                summary: document.getElementById(`summary-${index}`).value
+            };
+
+            // Save data in local storage
+            Object.keys(data).forEach(key => {
+                localStorage.setItem(`${key}-${index}`, data[key]);
+            });
+
+            alert(`Dados salvos para ${companies[index].name}!`);
+        }
+
+        function getSavedData(key) {
+            return localStorage.getItem(key);
+        }
+
+        function exportData() {
+            let data = '';
+            companies.forEach((company, index) => {
+                data += `Nome: ${company.name}\n`;
+                data += `Cidade: ${company.city}\n`;
+                data += `Contato: ${getSavedData(`contact-${index}`) || ''}\n`;
+                data += `Ponto Focal + Empresa: ${getSavedData(`empresa-${index}`) || ''}\n`;
+                data += `Próxima Agenda: ${getSavedData(`agenda-update-${index}`) || ''}\n`;
+                data += `NPS: ${getSavedData(`nps-${index}`) || ''}\n`;
+                data += `Risco de Churn: ${getSavedData(`riskchurn-${index}`) || ''}\n`;
+                data += `Data Atualização Churn: ${getSavedData(`churn-update-${index}`) || ''}\n`;
+                data += `NPS - Última Pesquisa: ${getSavedData(`nps-update-${index}`) || ''}\n`;
+                data += `Observações Churn: ${getSavedData(`observations-${index}`) || ''}\n`;
+                data += `Resumo Relacionamento: ${getSavedData(`summary-${index}`) || ''}\n`;
+                data += '----------------------------\n';
+            });
+
+            const blob = new Blob([data], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'dados_empresas.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        window.onload = loadCompanies;
+    </script>
+</body>
+</html>
